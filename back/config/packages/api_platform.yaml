@@ -1,0 +1,18 @@
+api_platform:
+    title: Challenge
+    version: 1.0.0
+    defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
+        pagination_items_per_page: 15
+        pagination_maximum_items_per_page: 30       
+    collection:
+        pagination:
+            enabled: false
+
+    swagger:
+         api_keys:
+             JWT:
+                name: Authorization
+                type: header

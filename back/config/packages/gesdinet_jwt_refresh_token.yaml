@@ -1,0 +1,6 @@
+gesdinet_jwt_refresh_token:
+    user_provider: usecurity.user.provider.concrete.users
+    refresh_token_class: App\Entity\RefreshToken
+    # user_identity_field: username
+    single_use: true
+    
