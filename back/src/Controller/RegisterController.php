@@ -56,9 +56,9 @@ class RegisterController extends AbstractController
         $this->managerRegistry->getManager()->flush();
         
         // Send confirmation email.
-        $emailResponse = $this->emailVerifie->sendEmailConfirmation($user);
+        // $emailResponse = $this->emailVerifie->sendEmailConfirmation($user);
 
         //return new RedirectResponse($this->getParameter('app.host_front') ."login");
-        return $this->json($username.' registered. Check your mail for validation('.$emailResponse.').');
+        return $this->json($username.' a été enregistré.');
     }
 }
