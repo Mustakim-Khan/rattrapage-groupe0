@@ -20,8 +20,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[Post(
     security: "is_granted('ROLE_ADMIN')"
 )]
-#[Delete()]
-#[Patch()]
+#[Delete(
+    security: "is_granted('ROLE_ADMIN')"
+)]
+#[Patch(
+    security: "is_granted('ROLE_ADMIN')"
+)]
 class Category
 {
     #[ORM\Id]
