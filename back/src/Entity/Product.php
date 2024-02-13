@@ -17,13 +17,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[Get()]
 #[GetCollection()]
 #[Post(
-    security: "is_granted('ROLE_ADMIN')"
+    // security: "is_granted('ROLE_ADMIN')"
 )]
 #[Delete(
-    security: "is_granted('ROLE_ADMIN')"
+    // security: "is_granted('ROLE_ADMIN')"
 )]
 #[Patch(
-    security: "is_granted('ROLE_ADMIN')"
+    // security: "is_granted('ROLE_ADMIN')"
 )]
 class Product
 {
