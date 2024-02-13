@@ -18,7 +18,6 @@ import {
 import { useEffect, useState } from "react";
 import { Edit3, Search, Trash } from "react-feather";
 import { Category } from "../categories/page";
-import { useRouter } from "next/navigation";
 
 type Product = {
   id: string;
@@ -28,6 +27,7 @@ type Product = {
   pht: number;
   expireDate: string;
   isAvailable: boolean;
+  category: string;
 };
 
 function formatDate(date: Date): string {
@@ -38,7 +38,6 @@ function formatDate(date: Date): string {
 }
 
 export default function Products() {
-  const router = useRouter();
   const productUrl = "http://localhost:8000/api/products";
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -55,6 +54,7 @@ export default function Products() {
       pht: 0,
       expireDate: new Date().toJSON(),
       isAvailable: false,
+      category: ""
     },
   });
   const [open, setOpen] = useState<boolean>(false);
@@ -101,6 +101,7 @@ export default function Products() {
   };
 
   const handleAddProduct = (data: Product) => {
+    const newData = {...data, };
     fetch(productUrl, {
       method: "POST",
       body: JSON.stringify(data),
@@ -115,7 +116,6 @@ export default function Products() {
         d.push(data)
         return d
       });
-    // router.refresh();
     });
   };
 
@@ -182,7 +182,6 @@ export default function Products() {
                           return { isEdit: true, data: product };
                         });
                         setOpen(true);
-                        // router.push(`/categories/${category.id}`)
                       }}
                     >
                       <Edit3 />
@@ -282,7 +281,14 @@ export default function Products() {
                   });
                 }}
               ></Switch>
-              <Select>
+              <Select defaultValue={data.data.category.split("/")[-1]} onChange={(e, newValue) => {
+                setData((prev) => {
+                  let d = { ...prev };
+
+                  if (newValue) d.data.category = `/api/categories/${newValue}`;
+                  return { ...d };
+                });
+              }}>
                 {categories.length > 0 ? categories.map((c: Category) => (
                    <Option value={c.id}>{ c.title }</Option> 
                 ))
