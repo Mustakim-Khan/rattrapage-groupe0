@@ -3,6 +3,8 @@
 import {
   Button,
   CircularProgress,
+  FormControl,
+  FormLabel,
   IconButton,
   Input,
   Modal,
@@ -16,10 +18,10 @@ import {
   Typography,
 } from "@mui/joy";
 import { useEffect, useState } from "react";
-import { Edit3, Search, Trash } from "react-feather";
+import { Database, Edit3, Layers, Search, Trash } from "react-feather";
 import { Category } from "../categories/page";
 
-type Product = {
+export type Product = {
   id: string;
   title: string;
   pa: number;
@@ -30,7 +32,7 @@ type Product = {
   category: string;
 };
 
-function formatDate(date: Date): string {
+export function formatDate(date: Date): string {
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear();
@@ -70,24 +72,34 @@ export default function Products() {
         .then(
           (result) => {
             setCategories(result);
-            // setLoading(false);
           },
           (error) => {
             setError(error);
-            // setLoading(false);
           }
         );
   }
   const handleEditProduct = (data: Product) => {
     fetch(productUrl + `/${data.id}`, {
       method: "PATCH",
-      body: JSON.stringify({ title: data.title }),
+      body: JSON.stringify({...data}),
       headers: {
         "Content-Type": "application/merge-patch+json",
         Accept: "application/json",
       },
     }).then((res) => {
-      console.log("data => ", res);
+      setData({
+        isEdit: false,
+        data: {
+          id: "",
+          title: "",
+          pa: 0,
+          pv: 0,
+          pht: 0,
+          expireDate: new Date().toJSON(),
+          isAvailable: false,
+          category: ""
+        },
+      })
     });
   };
 
@@ -110,12 +122,25 @@ export default function Products() {
         Accept: "application/json",
       },
     }).then((res) => {
-      console.log("data => ", res);
+      // console.log("data => ", res);
       setProducts((prev: Product[]) => {
         let d = [...prev]
         d.push(data)
         return d
       });
+      setData({
+        isEdit: false,
+        data: {
+          id: "",
+          title: "",
+          pa: 0,
+          pv: 0,
+          pht: 0,
+          expireDate: new Date().toJSON(),
+          isAvailable: false,
+          category: ""
+        },
+      })
     });
   };
 
@@ -130,8 +155,8 @@ export default function Products() {
       .then(
         (result) => {
           setProducts(result);
-          setLoading(false);
           getCategories();
+          setLoading(false);
         },
         (error) => {
           setError(error);
@@ -141,15 +166,16 @@ export default function Products() {
   }, []);
 
   return (
-    <>
+    <Stack p={2}>
+      <Typography level="title-lg" startDecorator={<Database/>}>Liste des produits</Typography>
       <Button
         variant="solid"
-        sx={{ color: "#fff", bgcolor: "#000 !important", my: 2}}
+        sx={{ color: "#fff", bgcolor: "#000 !important", my: 2, width: "auto"}}
         onClick={() => setOpen(true)}
       >
         Ajouter
       </Button>
-      <div className="flex justify-center">
+      <div className="flex justify-center m-3">
         {loading ? (
           <CircularProgress />
         ) : (
@@ -178,9 +204,7 @@ export default function Products() {
                   <td className="hover:cursor-pointer">
                     <IconButton
                       onClick={() => {
-                        setData((prev) => {
-                          return { isEdit: true, data: product };
-                        });
+                        setData({ isEdit: true, data: {...product} });
                         setOpen(true);
                       }}
                     >
@@ -202,13 +226,28 @@ export default function Products() {
           </Table>
         )}
       </div>
-      <Modal open={open} onClose={() => setOpen(false)}>
+      <Modal open={open} onClose={() => {
+        setOpen(false)
+        setData({
+          isEdit: false,
+          data: {
+            id: "",
+            title: "",
+            pa: 0,
+            pv: 0,
+            pht: 0,
+            expireDate: new Date().toJSON(),
+            isAvailable: false,
+            category: ""
+          },
+        })
+      }} sx={{width: "auto"}}>
         <ModalDialog>
           <form>
             <Stack sx={{ alignItems: "center" }} gap={1}>
               <ModalClose></ModalClose>
               <Typography>
-                {data.isEdit ? "Edit Categorie" : "Add Categorie"}
+                {data.isEdit ? "Editer Produit" : "Ajouter Produit"}
               </Typography>
               <Input
                 defaultValue={data.data.title}
@@ -275,32 +314,33 @@ export default function Products() {
                 onChange={(e) => {
                   setData((prev) => {
                     let d = { ...prev };
-
                     d.data.isAvailable = e.target.checked;
                     return { ...d };
                   });
                 }}
               ></Switch>
-              <Select defaultValue={data.data.category.split("/")[-1]} onChange={(e, newValue) => {
-                setData((prev) => {
-                  let d = { ...prev };
-
-                  if (newValue) d.data.category = `/api/categories/${newValue}`;
-                  return { ...d };
-                });
-              }}>
-                {categories.length > 0 ? categories.map((c: Category) => (
-                   <Option value={c.id}>{ c.title }</Option> 
-                ))
-                : <></>   
-                }
-              </Select>
+              <FormControl required>
+                <FormLabel>Categorie</FormLabel>
+                <Select defaultValue={data.data.category.split("/").slice(-1)[0]} onChange={(e, newValue) => {
+                  setData((prev) => {
+                    console.log('d ',newValue );
+                    
+                    return { ...prev, data: {...prev.data, category: `/api/categories/${newValue}`} };
+                  });
+                }}>
+                  {categories.length > 0 ? categories.map((c: Category) => (
+                    <Option key={c.id} value={c.id}>{ c.id }</Option> 
+                    ))
+                    : <></>   
+                  }
+                </Select>
+              </FormControl>
               <Button
                 sx={{ color: "#fff", bgcolor: "#000 !important" }}
                 onClick={() => {
                     data.isEdit ? handleEditProduct(data.data) : handleAddProduct(data.data)
-                  
-                  setOpen(false);
+                    
+                    setOpen(false);
                 }}
               >
                 {data.isEdit ? "Editer" : "Ajouter"}
@@ -309,6 +349,6 @@ export default function Products() {
           </form>
         </ModalDialog>
       </Modal>
-    </>
+    </Stack>
   );
 }

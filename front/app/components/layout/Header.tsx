@@ -1,5 +1,5 @@
 'use client'
-import { Box, Typography } from "@mui/joy"
+import { Box, List, ListDivider, ListItem, ListItemButton, Menu, MenuButton, MenuItem, Stack, Typography } from "@mui/joy"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import UserMenu from "@/app/components/layout/UserMenu"
@@ -44,6 +44,27 @@ export default function Header () {
                 >
                 </Typography>
             </Link>
+            <Stack justifyContent={"center"}>
+            <List role="menubar" orientation="horizontal" sx={{alignSelf: "center"}}>
+                <ListItem role="link">
+                    <ListItemButton role="menuitem" component="a" href="/admin/products">
+                        Products
+                    </ListItemButton>
+                </ListItem>
+                <ListDivider />
+                <ListItem role="link">
+                    <ListItemButton role="menuitem" component="a" href="/admin/categories">
+                        Categories
+                    </ListItemButton>
+                </ListItem>
+                <ListDivider />
+                <ListItem role="link">
+                    <ListItemButton role="menuitem" component="a" href="/stocks">
+                        Stocks
+                    </ListItemButton>
+                </ListItem>
+            </List>
+            </Stack>
             <UserMenu/>
         </Box>
     )

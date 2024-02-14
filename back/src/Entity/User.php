@@ -106,9 +106,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $isVerify = null;
 
+    #[ORM\OneToMany(mappedBy: 'rayonSetter', targetEntity: Stock::class)]
+    private Collection $stocks;
+
     public function __construct()
     {
         $this->isVerify = false;
+        $this->stocks = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -213,6 +217,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerify(?bool $isVerify): self
     {
         $this->isVerify = $isVerify;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stock>
+     */
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
+
+    public function addStock(Stock $stock): self
+    {
+        if (!$this->stocks->contains($stock)) {
+            $this->stocks->add($stock);
+            $stock->setRayonSetter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Stock $stock): self
+    {
+        if ($this->stocks->removeElement($stock)) {
+            // set the owning side to null (unless already changed)
+            if ($stock->getRayonSetter() === $this) {
+                $stock->setRayonSetter(null);
+            }
+        }
 
         return $this;
     }
