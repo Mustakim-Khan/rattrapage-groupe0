@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash 
-$ docker compose up -d --build
+$ make back-up
 ```
 Install the dependencies in front and back in the container docker
 
@@ -12,7 +12,7 @@ Install the dependencies in front and back in the container docker
 Create .env.local and change values
 
 ```bash
-$ docker compose exec back /bin/bash
+$ make back-bash
 $ composer install
 $ php bin/console d:m:m
 $ php bin/console d:f:l
@@ -23,7 +23,8 @@ $ php bin/console lexik:jwt:generate-keypair
 
 ### Front
 ```bash
-$ docker compose exec front /bin/sh
-$ npm install && npm run dev
+$ make front-up
+$ make front-install
+$ make front-dev
 ```
-> Go to : http://localhost:8001
+> Go to : http://localhost:3000

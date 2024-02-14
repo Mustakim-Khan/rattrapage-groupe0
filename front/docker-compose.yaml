@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  nodejs:
+    image: node:alpine
+    container_name: gstock-nodejs
+    working_dir: /home/app
+    tty: true
+    stdin_open: true
+    user: node
+    volumes:
+      - ./:/home/app
+    ports:
+      - 3000:3000

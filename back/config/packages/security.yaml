@@ -57,7 +57,7 @@ security:
         - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/register, methods: Post, roles: PUBLIC_ACCESS }
         - { path: ^/api/verify/email/, methods: Get, roles: PUBLIC_ACCESS }
-        - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/, roles: PUBLIC_ACCESS }
 
     
 
