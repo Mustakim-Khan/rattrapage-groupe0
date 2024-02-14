@@ -33,7 +33,7 @@ class ResetPasswordController extends AbstractController
             "templateID" => "URP",
             "context" => [
                 'username' => $user->getUsername(),
-                'link' => 'http://localhost:8001/login'
+                'link' => 'http://localhost:3000/login'
             ]
         );
 

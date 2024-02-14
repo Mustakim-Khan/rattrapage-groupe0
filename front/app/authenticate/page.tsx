@@ -1,5 +1,5 @@
 "use client"
-import * as React from 'react';
+import {useState} from 'react';
 import { CssVarsProvider, useColorScheme } from '@mui/joy/styles';
 import Box from '@mui/joy/Box';
 import {Button} from '@mui/joy';
@@ -12,10 +12,11 @@ import Link from '@mui/joy/Link';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import Stack from '@mui/joy/Stack';
-import { signIn } from 'next-auth/react';
+import { SignInResponse, signIn } from 'next-auth/react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 interface FormElements extends HTMLFormControlsCollection {
-  email: HTMLInputElement;
+  username: HTMLInputElement;
   password: HTMLInputElement;
   persistent: HTMLInputElement;
 }
@@ -24,8 +25,20 @@ interface SignInFormElement extends HTMLFormElement {
 }
 
 export default function Authenticate() {
-  const login = async (data: any) => {
-    await signIn("credentials", {...data, redirect: false,})
+  const router = useRouter()
+  const [unauthorized, setUnauthorized] = useState<boolean>(false)
+  
+  const login = async (username: string, password: string) => {
+    const res = await signIn('credentials', {
+      redirect: false,
+      username: username,
+      password: password,
+      // callbackUrl: `${window.location.origin}`,
+    });
+    if (res?.error) {
+      setUnauthorized(true);
+    }
+    router.push("/")
   }
 
   return (
@@ -72,19 +85,12 @@ export default function Authenticate() {
               onSubmit={(event: React.FormEvent<SignInFormElement>) => {
                 event.preventDefault();
                 const formElements = event.currentTarget.elements;
-                const data = {
-                  username: formElements.email.value,
-                  password: formElements.password.value,
-                  // persistent: formElements.persistent.checked,
-                };
-                login(data)
-                // alert(JSON.stringify(data, null, 2));
-                
+                login(formElements.username.value, formElements.password.value)
               }}
             >
               <FormControl required>
                 <FormLabel>Email</FormLabel>
-                <Input type="email" name="email" />
+                <Input type="text" name="username" />
               </FormControl>
               <FormControl required>
                 <FormLabel>Mot de passe</FormLabel>

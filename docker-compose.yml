@@ -57,19 +57,6 @@ services:
     networks:
       - dev
 
-  front:
-    container_name: front_challenge
-    image: node:lts-alpine3.16
-    working_dir: /app
-    tty: true
-    stdin_open: true
-    ports:
-      - 8001:4000
-    volumes:
-      - ./front:/app
-    networks:
-      - dev
-
 networks:
   dev:
 
