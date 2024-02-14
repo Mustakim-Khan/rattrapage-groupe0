@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/joy";
 import { useEffect, useState } from "react";
-import { Edit3, Search, Trash } from "react-feather";
+import { Database, Edit3, Layers, Search, Trash } from "react-feather";
 import { Category } from "../categories/page";
 
 export type Product = {
@@ -32,7 +32,7 @@ export type Product = {
   category: string;
 };
 
-function formatDate(date: Date): string {
+export function formatDate(date: Date): string {
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear();
@@ -167,6 +167,7 @@ export default function Products() {
 
   return (
     <Stack p={2}>
+      <Typography level="title-lg" startDecorator={<Database/>}>Liste des produits</Typography>
       <Button
         variant="solid"
         sx={{ color: "#fff", bgcolor: "#000 !important", my: 2, width: "auto"}}
@@ -351,38 +352,3 @@ export default function Products() {
     </Stack>
   );
 }
-
-
-// allergies
-// : 
-// []
-// category
-// : 
-// "/api/categories/3"
-// expireDate
-// : 
-// "2024-02-22T06:24:28+00:00"
-// id
-// : 
-// 1
-// ingredients
-// : 
-// []
-// isAvailable
-// : 
-// true
-// pa
-// : 
-// 10.5
-// pht
-// : 
-// 12.5
-// pv
-// : 
-// 15.5
-// stock
-// : 
-// "/api/stocks/1"
-// title
-// : 
-// "Product 1"
